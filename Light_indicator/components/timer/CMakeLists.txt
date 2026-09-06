@@ -1,5 +1,5 @@
 idf_component_register(
-    SRCS "adc_reader.c"
+    SRCS "app_timer.c"
     INCLUDE_DIRS "include"
-    PRIV_REQUIRES esp_adc
+    REQUIRES esp_timer
 )

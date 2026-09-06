@@ -1,0 +1,25 @@
+{
+    "C_Cpp.default.configurationProvider": "",
+    "C_Cpp.default.compileCommands": [
+        "${workspaceFolder}/.pio/build/esp32-s3-devkitm-1/compile_commands.json"
+    ],
+    "C_Cpp.intelliSenseEngine": "default",
+    "C_Cpp.errorSquiggles": "enabled",
+    "C_Cpp.autocompleteAddParentheses": true,
+    "C_Cpp.inlayHints.parameterNames.enabled": true,
+    "platformio-ide.autoRebuildAutocompleteIndex": true,
+    "cmake.sourceDirectory": "${workspaceFolder}",
+    "cmake.buildDirectory": "${workspaceFolder}/.pio/build/esp32-s3-devkitm-1",
+    "cmake.cmakePath": "${env:USERPROFILE}/.platformio/packages/tool-cmake/bin/cmake.exe",
+    "cmake.generator": "Ninja",
+    "cmake.configureOnOpen": false,
+    "cmake.configureOnEdit": false,
+    "cmake.skipConfigureIfCachePresent": true,
+    "cmake.enableAutomaticKitScan": false,
+    "[c]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools"
+    },
+    "[cpp]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools"
+    }
+}
