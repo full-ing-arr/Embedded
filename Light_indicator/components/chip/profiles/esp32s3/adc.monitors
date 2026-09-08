@@ -1,0 +1,5 @@
+ADC_MONITORS(ADC_DIG_DATA, ADC_UNIT_1, 2, ADC_BELOW | ADC_ABOVE,
+  // ESP-IDF 6.0.1 aliases the ADC channels on these pins to channels 0/1.
+  ADC_NO_DRIVER(9)
+  ADC_NO_DRIVER(10)
+)

@@ -5,16 +5,16 @@
 #include "driver/gpio.h"
 #include "esp_err.h"
 
-static void gpio_check_pin(int pin, bool output) {
-  bool valid = output ? GPIO_IS_VALID_OUTPUT_GPIO(pin) : GPIO_IS_VALID_GPIO(pin);
+static bool service_installed;
 
-  if (!valid) {
-    ESP_ERROR_CHECK(ESP_ERR_INVALID_ARG);
-    abort();
-  }
+static void check(esp_err_t error) {
+  if (error == ESP_OK)
+    return;
+  ESP_ERROR_CHECK(error);
+  abort();
 }
 
-static void gpio_configure(int pin, gpio_mode_t mode, app_gpio_pull_t pull) {
+static void configure(int pin, gpio_mode_t mode, app_gpio_pull_t pull) {
   const gpio_config_t config = {
     .pin_bit_mask = 1ULL << pin,
     .mode = mode,
@@ -22,39 +22,66 @@ static void gpio_configure(int pin, gpio_mode_t mode, app_gpio_pull_t pull) {
     .pull_down_en = pull == GPIO_PULL_DOWN ? GPIO_PULLDOWN_ENABLE : GPIO_PULLDOWN_DISABLE,
     .intr_type = GPIO_INTR_DISABLE,
   };
-
-  ESP_ERROR_CHECK(
-    gpio_config(&config));
+  check(gpio_config(&config));
 }
 
 void app_gpio_input_init(int pin, app_gpio_pull_t pull) {
-  gpio_check_pin(pin, false);
-
-  if ((unsigned)pull > GPIO_PULL_DOWN) {
-    ESP_ERROR_CHECK(ESP_ERR_INVALID_ARG);
-    abort();
-  }
-
-  gpio_configure(pin, GPIO_MODE_INPUT, pull);
+  configure(pin, GPIO_MODE_INPUT, pull);
 }
 
 void app_gpio_output_init(int pin, bool level) {
-  gpio_check_pin(pin, true);
-
-  ESP_ERROR_CHECK(
-    gpio_set_level(pin, level));
-
-  gpio_configure(pin, GPIO_MODE_OUTPUT, GPIO_PULL_NONE);
+  check(gpio_set_level(pin, level));
+  configure(pin, GPIO_MODE_OUTPUT, GPIO_PULL_NONE);
 }
 
 bool app_gpio_read(int pin) {
-  gpio_check_pin(pin, false);
   return gpio_get_level(pin) != 0;
 }
 
 void app_gpio_write(int pin, bool level) {
-  gpio_check_pin(pin, true);
+  check(gpio_set_level(pin, level));
+}
 
-  ESP_ERROR_CHECK(
-    gpio_set_level(pin, level));
+static gpio_int_type_t interrupt_type(app_gpio_trigger_t trigger) {
+  switch (trigger) {
+    case GPIO_RISING:
+      return GPIO_INTR_POSEDGE;
+    case GPIO_FALLING:
+      return GPIO_INTR_NEGEDGE;
+    case GPIO_ANY_EDGE:
+      return GPIO_INTR_ANYEDGE;
+    case GPIO_LOW:
+      return GPIO_INTR_LOW_LEVEL;
+    case GPIO_HIGH:
+      return GPIO_INTR_HIGH_LEVEL;
+    default: __builtin_unreachable();
+  }
+}
+
+void app_gpio_interrupt_run(int pin, app_gpio_trigger_t trigger, app_gpio_interrupt_cb_t callback, void *arg) {
+  if (!service_installed) {
+    check(gpio_install_isr_service(0));
+    service_installed = true;
+  }
+  check(gpio_set_intr_type(pin, interrupt_type(trigger)));
+  check(gpio_isr_handler_add(pin, callback, arg));
+}
+
+void app_gpio_interrupt_stop(int pin) {
+  check(gpio_isr_handler_remove(pin));
+  check(gpio_set_intr_type(pin, GPIO_INTR_DISABLE));
+}
+
+void app_gpio_interrupt_change(int pin, app_gpio_trigger_t trigger) {
+  check(gpio_intr_disable(pin));
+  check(gpio_set_intr_type(pin, interrupt_type(trigger)));
+  check(gpio_intr_enable(pin));
+}
+
+void app_gpio_interrupt_enable(int pin) {
+  check(gpio_intr_enable(pin));
+}
+
+void app_gpio_interrupt_disable(int pin) {
+  check(gpio_intr_disable(pin));
 }

@@ -1,0 +1,19 @@
+menu "Light control"
+
+    config LIGHT_ON_THRESHOLD
+        int "Turn on below (raw ADC)"
+        range 0 4095
+        default 2000
+        help
+            Turn the light on when the raw ADC value is below this threshold.
+            Must be lower than the turn-off threshold.
+
+    config LIGHT_OFF_THRESHOLD
+        int "Turn off above (raw ADC)"
+        range 0 4095
+        default 3000
+        help
+            Turn the light off when the raw ADC value is above this threshold.
+            Must be higher than the turn-on threshold.
+
+endmenu

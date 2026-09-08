@@ -15,13 +15,12 @@ public:
   AppTimer(const AppTimer &) = delete;
   AppTimer &operator=(const AppTimer &) = delete;
 
-  void run(uint64_t period_us) {
+  void run(uint64_t period_us) & {
     ::app_timer_run(&timer_, period_us);
   }
 
   void finish() & {
     ::app_timer_finish(&timer_);
-    timer_.handle = nullptr;
   }
 
 private:

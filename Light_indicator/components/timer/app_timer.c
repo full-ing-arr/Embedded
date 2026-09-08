@@ -1,4 +1,5 @@
 #include "app_timer.h"
+#include <stddef.h>
 
 app_timer_t app_timer_create(esp_timer_cb_t callback, void *arg) {
   app_timer_t timer = {0};
@@ -26,4 +27,6 @@ void app_timer_finish(app_timer_t *timer) {
 
   ESP_ERROR_CHECK(
     esp_timer_delete(timer->handle));
+
+  timer->handle = NULL;
 }
