@@ -1,8 +1,7 @@
 #include "app_task.h"
 #include <stdlib.h>
 
-app_task_t app_task_create(TaskFunction_t callback, void *arg) {
-  return (app_task_t){
+app_task_t app_task_create(TaskFunction_t callback, void *arg) { return (app_task_t){
     .callback = callback,
     .arg = arg,
   };

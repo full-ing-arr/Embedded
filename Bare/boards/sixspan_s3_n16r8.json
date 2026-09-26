@@ -1,0 +1,18 @@
+{
+  "name": "Sixspan ESP32-S3 N16R8 (16MB Flash, 8MB PSRAM)",
+  "vendor": "Sixspan",
+  "url": "https://www.espressif.com/sites/default/files/documentation/esp32-s3_datasheet_en.pdf",
+  "build": {
+    "mcu": "esp32s3",
+    "hwids": [
+      [
+        "0x1A86",
+        "0x55D3"
+      ]
+    ]
+  },
+  "upload": {
+    "flash_size": "16MB",
+    "maximum_size": 16777216
+  }
+}

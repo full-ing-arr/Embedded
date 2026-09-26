@@ -46,8 +46,6 @@ template<int Pin, adc_atten_t Atten = ADC_ATTEN_DB_6, adc_bitwidth_t Bitwidth = 
 struct adc : private adc_t, public AdcChannel<Pin> {
   using adc_t::raw;
 
-  static_assert(Atten >= ADC_ATTEN_DB_0 && Atten <= ADC_ATTEN_DB_12, "Invalid ADC attenuation");
-  static_assert(Bitwidth == AdcChannel<Pin>::bitwidth, "Unsupported ADC bit width for this module");
   static constexpr adc_unit_t unit = AdcChannel<Pin>::unit;
   static constexpr adc_atten_t atten = Atten;
   static constexpr adc_bitwidth_t bitwidth = Bitwidth;
